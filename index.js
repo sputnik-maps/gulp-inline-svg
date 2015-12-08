@@ -72,9 +72,21 @@ module.exports = function (_options) {
 
 				var iteration = 0;
 
-				var inlineSvg = encodeURIComponent(String(file.contents)).replace(new RegExp('(stroke|fill+)%3D%22%23?((?:.(?!%23?\s+(?:\S+)%3D|[%3E%22]))+.)%22?', 'gim'), function(match, p1, p2) {
-					console.log('p2', p2);
-					return p1 + '%3D%22%23#{color' + ++iteration + '}%22';
+				var str = String(file.contents);
+				var encoded = encodeURIComponent(str);
+				// console.log(str, '\n encoded \n ', encoded);
+
+				// monochrome colors normalize
+				var colors = {
+					fill: 'FFFFFF',
+					stroke: '000000'
+				};
+
+				var inlineSvg = encoded.replace(new RegExp('(stroke|fill)%3D%22(?:%23)?((?:.(?!%23?\s+(?:\S+)%3D|[%3E%22]))+.)%22?', 'gim'), function(match, p1, p2) {
+					console.log('p1', p1, 'p2', p2);
+
+					return p1 + '%3D%22%23' + colors[p1] + '%22';
+					// return p1 + '%3D%22%23{' + p1 + '}%22';
 				});
 
 				// store this svg data
