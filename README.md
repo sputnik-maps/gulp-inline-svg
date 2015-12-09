@@ -11,7 +11,7 @@ The generated mixin contains width and height values for each SVG. Those values 
 
 ## Usage
 
-First, install `gulp-inline-svg as a development dependency:
+First, install `gulp-inline-svg` as a development dependency:
 
 ```shell
 npm install --save-dev gulp-inline-svg
