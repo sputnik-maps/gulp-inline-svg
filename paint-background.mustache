@@ -1,0 +1,57 @@
+$svgIcons:(
+{{#svgs}}
+	'{{name}}': '{{{inline}}}' {{width}} {{height}},
+{{/svgs}}
+);
+
+
+@function str-replace($string, $search, $replace: '') {
+	$index: str-index($string, $search);
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace +
+			str-replace(str-slice($string, $index +
+			str-length($search)), $search, $replace);
+	}
+	@return $string;
+}
+
+@function svg-paint($svg, $options) {
+	$stroke: map-get($options, 'stroke');
+	@if $stroke {
+		$stroke: str-replace('' + $stroke, '#', '%23');
+	} @else {
+		$stroke: transparent;
+	}
+
+	$fill: map-get($options, 'fill');
+	@if $fill {
+		$fill: str-replace('' + $fill, '#', '%23');
+	} @else {
+		$fill: none;
+	}
+
+	$svg: str-replace(str-replace($svg, '%23FFFFFF', $fill), '%23000000', $stroke);
+
+	@return url($svg);
+}
+
+@function get-item($name) {
+	@return map-get($svgIcons, $name);
+}
+
+@function get-icon($name) {
+	$item: get-item($name);
+	@return nth($item, 1);
+}
+
+@mixin inline-svg($name, $options) {
+	background: transparent svg-paint(get-icon($name), $options) no-repeat 50% 50%;
+	background-size: 100%;
+	width: nth(get-item($name), 2);
+	height: nth(get-item($name), 3);
+}
+
+.bg-paint-sample {
+	@include inline-svg('share', ('fill':#00f, 'stroke': blue));
+}
+
