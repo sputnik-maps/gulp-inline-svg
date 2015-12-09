@@ -5,7 +5,7 @@ $svgIcons:(
 );
 
 
-@function str-replace($string, $search, $replace: '') {
+@function str-replace($string: '', $search: '', $replace: '') {
 	$index: str-index($string, $search);
 	@if $index {
 		@return str-slice($string, 1, $index - 1) + $replace +
@@ -44,9 +44,8 @@ $svgIcons:(
 	@return nth($item, 1);
 }
 
-@mixin inline-svg($name, $options) {
+@mixin inline-svg($name, $options:()) {
 	background: transparent svg-paint(get-icon($name), $options) no-repeat 50% 50%;
-	background-size: 100%;
 	width: nth(get-item($name), 2);
 	height: nth(get-item($name), 3);
 }
