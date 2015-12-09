@@ -30,9 +30,11 @@ $svgIcons:(
 		$fill: none;
 	}
 
-	$svg: str-replace(str-replace($svg, '%23FFFFFF', $fill), '%23000000', $stroke);
+	$str: str-slice($svg, 1);
+	$filled: str-replace($str, '%23FFFFFF', $fill);
+	$final: str-replace($filled, '%23000000', $stroke);
 
-	@return url($svg);
+	@return url($final);
 }
 
 @function get-item($name) {
