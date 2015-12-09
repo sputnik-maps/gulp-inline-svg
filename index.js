@@ -14,7 +14,7 @@ module.exports = function (_options) {
 		svgs = [],
 		options = {
 			filename: '_svg.scss',
-			template: __dirname + '/template.mustache'
+			template: __dirname + '/paint-background.mustache'
 		};
 
 		// merge options
