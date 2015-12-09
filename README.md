@@ -43,6 +43,15 @@ The _svg.scss file will provide you with the following mixins and functions:
 }
 ```
 
+#### Paint background SVG
+
+Since `@function svg-paint($svg, $options)` was added you can paint SVG backgrounds passing `$options` SASS-map:
+```
+.bg-paint-sample {
+	@include inline-svg('share', ('fill':#00f, 'stroke': blue));
+}
+```
+
 #### inline-svg-width function
 
 ```scss
