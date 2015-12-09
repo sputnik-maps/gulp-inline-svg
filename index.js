@@ -70,22 +70,28 @@ module.exports = function (_options) {
 					height = result.SVG.ATTR['viewbox'].toString().replace(/^\d+\s\d+\s(\d+\.?[\d])\s(\d+\.?[\d])/, "$2");
 				}
 
-				var iteration = 0;
-
-				var str = String(file.contents);
-				var encoded = encodeURIComponent(str);
-				// console.log(str, '\n encoded \n ', encoded);
-
 				// monochrome colors normalize
 				var colors = {
-					fill: 'FFFFFF',
-					stroke: '000000'
+					fill: '#FFFFFF',
+					stroke: '#000000'
 				};
 
-				var inlineSvg = encoded.replace(new RegExp('(stroke|fill)%3D%22(?:%23)?((?:.(?!%23?\s+(?:\S+)%3D|[%3E%22]))+.)%22?', 'gim'), function(match, p1, p2) {
-					// console.log('p1', p1, 'p2', p2);
-					return p1 + '%3D%22%23' + colors[p1] + '%22';
+				var str = String(file.contents);
+
+				function replaceAttr (s, attrs, fn) {
+					return s.replace(new RegExp('('+attrs+')\s?=\s?["\']?((?:.(?!["\']?\s+(?:\S+)=|[>"\']))+.)["\']?','gmi'), fn);
+				}
+
+				var pinned = replaceAttr(str, 'fill|stroke', function (match, p1, p2) {
+					var ret = match;
+					if ('transparent' !== p2 && 'none' !== p2) {
+						ret = '' + p1 + '="' + colors[p1] + '"';
+					}
+					console.log(' * SVG: `'+ match + '` (' + p1 + ' = ' + p2 + ') => ', '`' + ret + '`');
+					return ret;
 				});
+
+				var inlineSvg = encodeURIComponent(pinned);
 
 				// store this svg data
 				svgs.push({
