@@ -3,8 +3,7 @@ ${{{name}}}: '{{{inline}}}' {{width}} {{height}};
 {{/svgs}}
 
 @mixin inline-svg($name) {
-	background: transparent url(nth($name, 1)) no-repeat 50% 50%;
-	background-size: 100%;
+	background: url(nth($name, 1)) no-repeat 50% 50%;
 	width: nth($name, 2);
 	height: nth($name, 3);
 }
