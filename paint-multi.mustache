@@ -1,0 +1,158 @@
+$svgIcons:(
+{{#svgs}}
+	'{{name}}': '{{{inline}}}' {{width}} {{height}},
+{{/svgs}}
+);
+
+
+@function str-replace($string: '', $search: '', $replace: '') {
+	$index: str-index($string, $search);
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace +
+			str-replace(str-slice($string, $index +
+			str-length($search)), $search, $replace);
+	}
+	@return $string;
+}
+
+@function str-replace-once($string: '', $search: '', $replace: '') {
+	$index: str-index($string, $search);
+
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace +
+			str-slice($string, $index +
+			str-length($search));
+	}
+
+	@return $string;
+}
+
+$normFill: '%23FFFFFF';
+$normStroke: '%23000000';
+
+@function svg-paint($svg, $options:()) {
+
+	$stroke: map-has-key($options, 'stroke') and map-get($options, 'stroke') or '';
+	@if $stroke {
+		$stroke: str-replace('' + $stroke, '#', '%23');
+	} @else {
+		$stroke: transparent;
+	}
+
+	$fill: map-has-key($options, 'fill') and map-get($options, 'fill') or '';
+	@if $fill {
+		$fill: str-replace('' + $fill, '#', '%23');
+	} @else {
+		$fill: none;
+	}
+
+	$str: str-slice($svg, 1);
+
+	@if map-has-key($options, 'fillSet') {
+		$fillSet: map-get($options, 'fillSet');
+		@each $fillItem in $fillSet {
+			$str: str-replace-once($str, $normFill, $fillItem);
+		}
+	}
+	@if map-has-key($options, 'strokeSet') {
+		$strokeSet: map-get($options, 'strokeSet');
+		@each $strokeItem in $strokeSet {
+			$str: str-replace-once($str, $normStroke, $strokeItem);
+		}
+	}
+
+	$str: str-replace($str, $normFill, $fill);
+	$str: str-replace($str, $normStroke, $stroke);
+
+	@return url($str);
+}
+
+@function get-item($name) {
+	@return map-get($svgIcons, $name);
+}
+
+@function get-icon($name) {
+	$item: get-item($name);
+	@return nth($item, 1);
+}
+
+@function get-icon-width($name) {
+	@return nth(get-item($name), 2);
+}
+
+@function get-icon-height($name) {
+	@return nth(get-item($name), 3);
+}
+
+
+@mixin svg-width($name) {
+	width: nth(get-item($name), 2);
+}
+
+@mixin svg-height($name) {
+	height: nth(get-item($name), 3);
+}
+
+@mixin svg-size($name) {
+	width: nth(get-item($name), 2);
+	height: nth(get-item($name), 3);
+}
+
+@mixin inline-svg-bg($name, $options:(), $hoverOptions:()) {
+	background-image: svg-paint(get-icon($name), $options);
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+@mixin inline-svg($name, $options:(), $hoverOptions:()) {
+	@include svg-size($name);
+
+	@include inline-svg-bg($name, $options);
+}
+
+@mixin svg-size-mag($name, $options:()) {
+	$size: map-get($options, 'size');
+	$sizeW: map-get($options, 'sizeW');
+	$sizeH: map-get($options, 'sizeH');
+
+	@if $size {
+		@include svg-size($name);
+	} @elseif $sizeW {
+		@include svg-width($name);
+	} @elseif $sizeH {
+		@include svg-height($name);
+	}
+}
+
+@mixin inline-svg-mag($name, $options:()) {
+	@include svg-size-mag($name, $options);
+	@include inline-svg-bg($name, $options);
+
+	$hoverFill: map-get($options, 'hoverFill');
+	$hoverStroke: map-get($options, 'hoverStroke');
+	@if $hoverFill or $hoverStroke {
+		&:hover {
+			@include inline-svg-bg($name, ('fill': $hoverFill, 'stroke': $hoverStroke));
+		}
+	}
+}
+
+/*
+
+.bg-paint-sample {
+	@include inline-svg('share', ('fill':#00f, 'stroke': blue));
+}
+.bg-paint-sample-mag {
+	@include inline-svg-mag('auto', ('sizeW':true, 'fill':#fff, 'hoverStroke':#ccc));
+}
+.multi-color {
+	@include inline-svg-mag('marker-location2', (
+		'size': true,
+		'fill': #555,
+		'stroke': #111,
+		'fillSet': (#EEE, #222, #333),
+		'strokeSet': (#777, #888)
+	));
+}
+
+*/
