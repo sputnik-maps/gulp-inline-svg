@@ -51,13 +51,13 @@ $normStroke: '%23000000';
 	@if map-has-key($options, 'fillSet') {
 		$fillSet: map-get($options, 'fillSet');
 		@each $fillItem in $fillSet {
-			$str: str-replace-once($str, $normFill, $fillItem);
+			$str: str-replace-once($str, $normFill, str-replace('' + $fillItem, '#', '%23'));
 		}
 	}
 	@if map-has-key($options, 'strokeSet') {
 		$strokeSet: map-get($options, 'strokeSet');
 		@each $strokeItem in $strokeSet {
-			$str: str-replace-once($str, $normStroke, $strokeItem);
+			$str: str-replace-once($str, $normStroke, str-replace('' + $strokeItem, '#', '%23'));
 		}
 	}
 
