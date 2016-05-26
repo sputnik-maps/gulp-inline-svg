@@ -87,7 +87,7 @@ module.exports = function (_options) {
 					if ('transparent' !== p2 && 'none' !== p2) {
 						ret = '' + p1 + '="' + colors[p1] + '"';
 					}
-					// console.log(' * SVG: `'+ match + '` (' + p1 + ' = ' + p2 + ') => ', '`' + ret + '`');
+					// console.log(' * SVG: filename ['+  path.basename(file.path, '.svg') +'] `' + match + '` (' + p1 + ' = ' + p2 + ') => ', '`' + ret + '`');
 					return ret;
 				});
 
